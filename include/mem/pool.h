@@ -48,7 +48,7 @@
 
 #define POOL_DEFN(name,ty,size,align)                           \
   ALIGNED(align,static ty, __##name##_pool_array[size]);        \
-  static u32 __##name##_pool_bitmap[size >> 3];                 \
+  static u32 __##name##_pool_bitmap[((size - 1) >> 3) + 1];     \
   void name##_pool_init(void) {                                 \
     int i;                                                      \
     for(i=0;i<size;i++)                                         \
