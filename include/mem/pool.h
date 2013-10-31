@@ -48,15 +48,15 @@
 
 #define POOL_DEFN(name,ty,size,align)                           \
   ALIGNED(align,static ty, __##name##_pool_array[size]);        \
-  static u32 __##name##_pool_bitmap[((size - 1) >> 3) + 1];     \
+  static u32 __##name##_pool_bitmap[(((size) - 1) >> 3) + 1];   \
   void name##_pool_init(void) {                                 \
     int i;                                                      \
-    for(i=0;i<size;i++)                                         \
+    for(i=0;i<(size);i++)                                       \
       BITMAP_CLR(__##name##_pool_bitmap, i);                    \
   }                                                             \
   ty *name##_pool_alloc(void) {                                 \
     int i;                                                      \
-    for(i=0;i<size;i++)                                         \
+    for(i=0;i<(size);i++)                                       \
       if(BITMAP_TST(__##name##_pool_bitmap, i) == 0) {          \
         BITMAP_SET(__##name##_pool_bitmap, i);                  \
         return &__##name##_pool_array[i];                       \
@@ -65,7 +65,7 @@
   }                                                             \
   void name##_pool_free(ty *x) {                                \
     int i;                                                      \
-    for(i=0;i<size;i++)                                         \
+    for(i=0;i<(size);i++)                                       \
       if((u32) x == (u32) &__##name##_pool_array[i]) {          \
         BITMAP_CLR(__##name##_pool_bitmap, i);                  \
         return;                                                 \
